@@ -82,6 +82,14 @@
         }
       ]
     },
+    "deb": {
+      "afterInstall": "scripts/deb/after-install.sh",
+      "afterRemove": "scripts/deb/after-remove.sh"
+    },
+    "rpm": {
+      "afterInstall": "scripts/rpm/after-install.sh",
+      "afterRemove": "scripts/rpm/after-remove.sh"
+    },
     "mac": {
       "artifactName": "azeron-software-${version}-${arch}-mac.${ext}",
       "target": [
