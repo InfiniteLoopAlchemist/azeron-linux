@@ -1,14 +1,26 @@
 #!/bin/bash
-# .rpm postuninstall scriptlet — remove Azeron udev rules.
-set -e
+# .deb postrm — combines electron-builder's default (drop update-alternatives
+# symlink) with removal of the Azeron udev rule. Variables in ${...} are
+# substituted by electron-builder before install.
 
-UDEV_DST="/etc/udev/rules.d/99-azeron.rules"
+# --- electron-builder default ---------------------------------------------
+
+# Delete the link to the binary
+if type update-alternatives >/dev/null 2>&1; then
+    update-alternatives --remove '${executable}' '/usr/bin/${executable}'
+else
+    rm -f '/usr/bin/${executable}'
+fi
+
+# --- Azeron udev rules ----------------------------------------------------
+
+UDEV_DST='/etc/udev/rules.d/99-azeron.rules'
 
 if [ -f "$UDEV_DST" ]; then
-  rm -f "$UDEV_DST"
-  if command -v udevadm >/dev/null 2>&1; then
-    udevadm control --reload-rules || true
-  fi
+    rm -f "$UDEV_DST"
+    if command -v udevadm >/dev/null 2>&1; then
+        udevadm control --reload-rules || true
+    fi
 fi
 
 exit 0
